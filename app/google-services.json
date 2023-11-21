@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "926337207129",
+    "project_id": "timemaster-ce188",
+    "storage_bucket": "timemaster-ce188.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:926337207129:android:7dcfc11c5110d719079a48",
+        "android_client_info": {
+          "package_name": "com.timemaster"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAzPLvMATHBQZ49D26iL2htei63azJiqxE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

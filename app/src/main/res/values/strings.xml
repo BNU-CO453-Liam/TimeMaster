@@ -1,0 +1,26 @@
+<resources>
+    <string name="app_name">Time Master</string>
+    <string name="app_name1">v1.0</string>
+
+    <string name="login_email">Enter Email</string>
+    <string name="login_password">Enter Password</string>
+
+    <string name="login_login">Login</string>
+    <string name="login_register">Register</string>
+
+    <string name="register_email">Enter Email</string>
+    <string name="register_password">Enter Password</string>
+
+    <string name="register_register">Register</string>
+    <string name="register_login">Login</string>
+
+    <string name="EditProfile">Edit Profile</string>
+    <string name="UpdateProfile">Update Profile</string>
+    <string name="DeleteProfile">Delete Profile</string>
+
+    <string name="ResetPassword"><u>Reset Password</u></string>
+    <string name="ForgotPassword"><u>Forgot Password</u></string>
+    <string name="must">Password must be reset by email</string>
+    <string name="pause">pause</string>
+    <string name="resume">resume</string>
+</resources>

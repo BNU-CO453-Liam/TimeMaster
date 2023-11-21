@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="16dp"
+        android:gravity="center_vertical"
+        android:layout_centerVertical="true">
+
+    <TextView
+        android:id="@+id/taskNameTextView"
+        android:textColor="#7E7E7E"
+        android:layout_width="0dp"
+        android:layout_weight="1"
+        android:layout_height="wrap_content"
+        android:text="Task Name" />
+
+        <TextView
+            android:id="@+id/timerTextView"
+            android:textColor="#FFFF00"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="00:00:00" />
+
+    <ToggleButton
+        android:id="@+id/playButton"
+        android:layout_width="58dp"
+        android:layout_height="31dp"
+        android:background="@drawable/play"
+        android:textOff=""
+        android:textOn=""
+        android:gravity="bottom" />
+
+    <Button
+        android:id="@+id/deleteButton"
+        android:layout_width="58dp"
+        android:layout_height="31dp"
+        android:background="@drawable/bin"
+        android:gravity="bottom"
+        android:textOff=""
+        android:textOn="" />
+</LinearLayout>
+
+</RelativeLayout>
+
