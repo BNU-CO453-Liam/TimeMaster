@@ -6,6 +6,24 @@
     android:layout_height="match_parent"
     android:background="@drawable/util">
 
+    <FrameLayout
+        android:id="@+id/chartContainer"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_constraintBottom_toTopOf="@+id/linearLayout2"
+        app:layout_constraintTop_toTopOf="parent"
+        android:paddingTop="100dp"
+        android:paddingBottom="100dp"
+        android:paddingLeft="16dp"
+        android:paddingRight="16dp">
+
+        <!-- Placeholder for the PieChart -->
+        <com.github.mikephil.charting.charts.PieChart
+            android:id="@+id/doughnutPieChart"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
+    </FrameLayout>
+
     <LinearLayout
         android:id="@+id/linearLayout2"
         android:layout_width="match_parent"
@@ -76,20 +94,6 @@
             tools:layout_editor_absoluteY="674dp" />
 
     </LinearLayout>
-
-    <FrameLayout
-        android:id="@+id/chartContainer"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        app:layout_constraintBottom_toTopOf="@+id/linearLayout2"
-        app:layout_constraintTop_toTopOf="parent">
-
-        <!-- Placeholder for the PieChart -->
-        <com.github.mikephil.charting.charts.PieChart
-            android:id="@+id/doughnutPieChart"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"/>
-    </FrameLayout>
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
