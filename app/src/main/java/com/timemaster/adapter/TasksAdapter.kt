@@ -6,70 +6,64 @@ import android.os.Looper
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.BaseAdapter
 import android.widget.Button
 import android.widget.TextView
 import android.widget.ToggleButton
+import androidx.recyclerview.widget.RecyclerView
 import com.timemaster.R
 import com.timemaster.model.Task
 import java.util.*
 
-class TasksAdapter(private val context: Context, private val taskList: MutableList<Task>) : BaseAdapter() {
+class TasksAdapter(private val context: Context, private val taskList: MutableList<Task>,
+                   private val onDeleteClickListener: (position: Int) -> Unit) :
+    RecyclerView.Adapter<TasksAdapter.ViewHolder>() {
 
     private val inflater: LayoutInflater = LayoutInflater.from(context)
     private val timers: MutableMap<Int, Handler> = mutableMapOf()
 
-    override fun getCount(): Int {
-        return taskList.size
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
+        val view = inflater.inflate(R.layout.task_item, parent, false)
+        return ViewHolder(view)
     }
 
-    override fun getItem(position: Int): Task {
-        return taskList[position]
-    }
-
-    override fun getItemId(position: Int): Long {
-        return position.toLong()
-    }
-
-    override fun getView(position: Int, convertView: View?, parent: ViewGroup?): View {
-        val view: View
-        val viewHolder: ViewHolder
-
-        if (convertView == null) {
-            view = inflater.inflate(R.layout.task_item, parent, false)
-            viewHolder = ViewHolder(view)
-            view.tag = viewHolder
-        } else {
-            view = convertView
-            viewHolder = view.tag as ViewHolder
-        }
-
-        val task = getItem(position)
-        viewHolder.taskNameTextView.text = task.name
-        viewHolder.timerTextView.text = getFormattedTime(task.duration)
+    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+        val task = taskList[position]
+        holder.taskNameTextView.text = task.name
+        holder.timerTextView.text = getFormattedTime(task.duration)
 
         // Set play button state and click listener
         if (task.isRunning) {
-            viewHolder.playButton.setBackgroundResource(R.drawable.pause)
-            viewHolder.playButton.isChecked = true
+            holder.playButton.setBackgroundResource(R.drawable.pause)
+            holder.playButton.isChecked = true
         } else {
-            viewHolder.playButton.setBackgroundResource(R.drawable.play)
-            viewHolder.playButton.isChecked = false
+            holder.playButton.setBackgroundResource(R.drawable.play)
+            holder.playButton.isChecked = false
         }
 
-        viewHolder.playButton.setOnClickListener {
+        holder.playButton.setOnClickListener {
             toggleTimer(position)
         }
 
-        viewHolder.deleteButton.setOnClickListener {
-            deleteTask(position)
+        holder.deleteButton.setOnClickListener {
+            //deleteTask(position)
+            onDeleteClickListener.invoke(holder.adapterPosition)
         }
+    }
 
-        return view
+    override fun getItemCount(): Int {
+        return taskList.size
+    }
+
+    fun getTimerHandler(position: Int): Handler? {
+        return timers[position]
+    }
+
+    fun removeTimer(position: Int) {
+        timers.remove(position)
     }
 
     private fun toggleTimer(position: Int) {
-        val task = getItem(position)
+        val task = taskList[position]
         if (task.isRunning) {
             pauseTimer(position)
         } else {
@@ -79,7 +73,7 @@ class TasksAdapter(private val context: Context, private val taskList: MutableLi
     }
 
     private fun startTimer(position: Int) {
-        val task = getItem(position)
+        val task = taskList[position]
         task.isRunning = true
         timers[position] = Handler(Looper.getMainLooper())
         timers[position]?.postDelayed(object : Runnable {
@@ -92,7 +86,7 @@ class TasksAdapter(private val context: Context, private val taskList: MutableLi
     }
 
     private fun pauseTimer(position: Int) {
-        val task = getItem(position)
+        val task = taskList[position]
         task.isRunning = false
         timers[position]?.removeCallbacksAndMessages(null)
         timers.remove(position)
@@ -106,8 +100,8 @@ class TasksAdapter(private val context: Context, private val taskList: MutableLi
         notifyDataSetChanged()
     }
 
-    private fun deleteTask(position: Int) {
-        val task = getItem(position)
+    fun deleteTask(position: Int) {
+        val task = taskList[position]
         if (task.isRunning) {
             pauseTimer(position)
         }
@@ -122,7 +116,7 @@ class TasksAdapter(private val context: Context, private val taskList: MutableLi
         return String.format(Locale.getDefault(), "%02d:%02d:%02d", hours, minutes, seconds)
     }
 
-    private class ViewHolder(view: View) {
+    inner class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val taskNameTextView: TextView = view.findViewById(R.id.taskNameTextView)
         val timerTextView: TextView = view.findViewById(R.id.timerTextView)
         val playButton: ToggleButton = view.findViewById(R.id.playButton)

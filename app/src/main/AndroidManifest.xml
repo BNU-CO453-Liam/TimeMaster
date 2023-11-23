@@ -17,15 +17,15 @@
             android:name=".controller.Login"
             android:exported="true">
 
-        <intent-filter>
-            <action android:name="android.intent.action.MAIN" />
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
 
-            <category android:name="android.intent.category.LAUNCHER" />
-        </intent-filter>
-            </activity>
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
 
         <activity
-            android:name=".controller.Account"
+            android:name=".controller.Register"
             android:exported="false">
         </activity>
 
@@ -35,7 +35,24 @@
         </activity>
 
         <activity
-            android:name=".controller.Register"
+            android:name=".controller.Tasks"
+            android:windowSoftInputMode="adjustPan"
+            android:exported="false">
+        </activity>
+
+        <activity
+            android:name=".controller.Metrics"
+            android:exported="false">
+
+        </activity>
+
+        <activity
+            android:name=".controller.Performance"
+            android:exported="false">
+        </activity>
+
+        <activity
+            android:name=".controller.Account"
             android:exported="false">
         </activity>
 
