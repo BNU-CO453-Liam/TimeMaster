@@ -6,22 +6,40 @@
     android:layout_height="wrap_content"
     android:padding="16dp">
 
-<TextView
-android:id="@+id/taskNameTextView"
-android:layout_width="wrap_content"
-android:layout_height="wrap_content"
-android:text="Task Name"
-android:textSize="18sp"
-android:textStyle="bold"/>
+    <TextView
+        android:id="@+id/taskNameTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Task Name"
+        android:textSize="18sp"
+        android:textStyle="bold"/>
 
-<TextView
-android:id="@+id/timerTextView"
-android:layout_width="wrap_content"
-android:layout_height="wrap_content"
-android:layout_below="@id/taskNameTextView"
-android:layout_marginTop="8dp"
-android:text="00:00:00"
-android:textSize="16sp"/>
+    <TextView
+        android:id="@+id/startTimeTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/taskNameTextView"
+        android:layout_marginTop="8dp"
+        android:text="Start Time"
+        android:textSize="16sp"/>
+
+    <TextView
+        android:id="@+id/endTimeTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/startTimeTextView"
+        android:layout_marginTop="8dp"
+        android:text="End Time"
+        android:textSize="16sp"/>
+
+    <TextView
+        android:id="@+id/timerTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/endTimeTextView"
+        android:layout_marginTop="8dp"
+        android:text="00:00:00"
+        android:textSize="16sp"/>
 
     <ToggleButton
         android:id="@+id/playButton"
@@ -34,13 +52,12 @@ android:textSize="16sp"/>
         android:textOn="" />
 
     <Button
-android:id="@+id/deleteButton"
-android:layout_width="wrap_content"
-android:layout_height="wrap_content"
-android:layout_below="@id/timerTextView"
-android:layout_marginTop="8dp"
-android:layout_alignParentEnd="true"
-android:text="Delete"/>
+        android:id="@+id/deleteButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/playButton"
+        android:layout_marginTop="8dp"
+        android:layout_alignParentEnd="true"
+        android:text="Delete"/>
 
-    </RelativeLayout>
-
+</RelativeLayout>

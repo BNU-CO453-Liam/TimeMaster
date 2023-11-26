@@ -3,6 +3,7 @@ package com.timemaster.adapter
 import android.content.Context
 import android.os.Handler
 import android.os.Looper
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,11 +12,17 @@ import android.widget.TextView
 import android.widget.ToggleButton
 import androidx.recyclerview.widget.RecyclerView
 import com.timemaster.R
+import com.timemaster.controller.Tasks
 import com.timemaster.model.Task
 import java.util.*
+import com.timemaster.model.TaskDbHelper
 
-class TasksAdapter(private val context: Context, private val taskList: MutableList<Task>,
-                   private val onDeleteClickListener: (position: Int) -> Unit) :
+class TasksAdapter(
+    private val context: Context,
+    private val taskList: MutableList<Task>,
+    private val taskDbHelper: TaskDbHelper,
+    private val onDeleteClickListener: (position: Int) -> Unit
+) :
     RecyclerView.Adapter<TasksAdapter.ViewHolder>() {
 
     private val inflater: LayoutInflater = LayoutInflater.from(context)
@@ -75,6 +82,10 @@ class TasksAdapter(private val context: Context, private val taskList: MutableLi
     private fun startTimer(position: Int) {
         val task = taskList[position]
         task.isRunning = true
+
+        task.startTime = System.currentTimeMillis()
+        taskDbHelper.updateTask(task)
+
         timers[position] = Handler(Looper.getMainLooper())
         timers[position]?.postDelayed(object : Runnable {
             override fun run() {
@@ -86,10 +97,20 @@ class TasksAdapter(private val context: Context, private val taskList: MutableLi
     }
 
     private fun pauseTimer(position: Int) {
+
         val task = taskList[position]
         task.isRunning = false
+
+        task.endTime = System.currentTimeMillis()
+        taskDbHelper.updateTask(task)
+
+        val durationSeconds = (task.endTime - task.startTime) / 1000
+        Log.d("TaskDuration", "Duration: $durationSeconds seconds")
+
+        task.duration = durationSeconds
         timers[position]?.removeCallbacksAndMessages(null)
         timers.remove(position)
+
         notifyDataSetChanged()
     }
 

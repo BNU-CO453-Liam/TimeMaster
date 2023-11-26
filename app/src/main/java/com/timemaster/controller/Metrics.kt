@@ -3,6 +3,7 @@ package com.timemaster.controller
 import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
+import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import com.github.mikephil.charting.animation.Easing
 import com.github.mikephil.charting.charts.PieChart
@@ -12,6 +13,7 @@ import com.github.mikephil.charting.data.PieEntry
 import com.github.mikephil.charting.utils.ColorTemplate
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.timemaster.R
+import com.timemaster.model.TaskDbHelper
 
 class Metrics : AppCompatActivity() {
 
@@ -24,6 +26,9 @@ class Metrics : AppCompatActivity() {
         doughnutPieChart = findViewById(R.id.doughnutPieChart)
         configureDoughnutChart()
         animateChart()
+
+        // Fetch task data and update the pie chart
+        updatePieChart()
 
         // Find the Floating Action Buttons
         val fab3: FloatingActionButton = findViewById(R.id.floatingActionButton3)
@@ -45,13 +50,17 @@ class Metrics : AppCompatActivity() {
     }
 
     private fun configureDoughnutChart() {
-        // Sample data for the doughnut pie chart
-        val entries = listOf(
-            PieEntry(25f, "Slice 1"),
-            PieEntry(30f, "Slice 2"),
-            PieEntry(15f, "Slice 3"),
-            PieEntry(30f, "Slice 4")
-        )
+        // Fetch tasks from the database
+        val dbHelper = TaskDbHelper(this)
+        val taskList = dbHelper.getAllTasks()
+
+        // Calculate the total duration from your list of tasks
+        val totalDuration = taskList.sumOf { it.duration.toInt() }
+
+        // Create entries for the doughnut pie chart
+        val entries = taskList.map { task ->
+            PieEntry((task.duration / totalDuration.toFloat()) * 100, task.name)
+        }
 
         val dataSet = PieDataSet(entries, "Doughnut Chart")
         dataSet.colors = ColorTemplate.COLORFUL_COLORS.toList()
@@ -69,5 +78,35 @@ class Metrics : AppCompatActivity() {
 
     private fun animateChart(duration: Long = 1400, easing: Easing.EasingFunction = Easing.EaseInOutQuad) {
         doughnutPieChart.animateY(duration.toInt(), easing)
+    }
+
+    private fun updatePieChart() {
+        // Fetch tasks from the database
+        val dbHelper = TaskDbHelper(this)
+        val taskList = dbHelper.getAllTasks()
+
+        // Log the duration values for debugging
+        taskList.forEachIndexed { index, task ->
+            Log.i("Tasks", "Task $index - Name: ${task.name}, Duration: ${task.duration}")
+        }
+
+        // Calculate the total duration from your list of tasks
+        val totalDuration = taskList.sumBy { it.duration.toInt() }
+
+        Log.i("Tasks", "Total Duration: $totalDuration")
+
+        // Create entries for the doughnut pie chart
+        val entries = taskList.map { task ->
+            PieEntry((task.duration / totalDuration.toFloat()) * 100, task.name)
+        }
+
+        val dataSet = PieDataSet(entries, "Doughnut Chart")
+        dataSet.colors = ColorTemplate.COLORFUL_COLORS.toList()
+
+        val pieData = PieData(dataSet)
+        doughnutPieChart.data = pieData
+
+        // Refresh the chart
+        doughnutPieChart.invalidate()
     }
 }

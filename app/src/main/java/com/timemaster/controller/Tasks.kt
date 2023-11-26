@@ -5,6 +5,7 @@ import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.util.Log
 import android.view.View
 import android.widget.EditText
 import android.widget.ListView
@@ -40,8 +41,10 @@ class Tasks : AppCompatActivity() {
 
         taskList = mutableListOf()
 
+        taskDbHelper = TaskDbHelper(this)
+
         // Create TasksAdapter with onDeleteClickListener
-        taskAdapter = TasksAdapter(this, taskList) { position ->
+        taskAdapter = TasksAdapter(this, taskList, taskDbHelper) { position ->
             // Handle onDeleteClickListener logic here, e.g., delete the task
             deleteTask(position)
         }
@@ -51,7 +54,7 @@ class Tasks : AppCompatActivity() {
         taskRecyclerView.adapter = taskAdapter
 
         timerHandler = Handler(Looper.getMainLooper())
-        taskDbHelper = TaskDbHelper(this)
+
 
 
         // Find the Floating Action Buttons
@@ -103,6 +106,9 @@ class Tasks : AppCompatActivity() {
         val taskName = taskNameEditText.text.toString()
         if (taskName.isNotEmpty()) {
             val newTask = Task(taskName)
+            // Set initial values for startTime and endTime
+            newTask.startTime = System.currentTimeMillis()
+            newTask.endTime = System.currentTimeMillis()
             taskDbHelper.addTask(newTask)
             loadTasks() // Reload tasks from the database
             taskNameEditText.text.clear()
@@ -124,6 +130,10 @@ class Tasks : AppCompatActivity() {
 
     private fun startTimer(task: Task) {
         task.isRunning = true
+
+        task.startTime = System.currentTimeMillis()
+        taskDbHelper.updateTask(task)
+
         timerHandler.postDelayed(object : Runnable {
             override fun run() {
                 taskAdapter.updateTimers()
@@ -133,7 +143,23 @@ class Tasks : AppCompatActivity() {
     }
 
     private fun pauseTimer(task: Task) {
+        Log.d("TaskDuration", "Pause Timer function called")
         task.isRunning = false
+        task.endTime = System.currentTimeMillis()
+
+        // Log the start time, end time, and calculated duration
+        Log.d("TaskDuration", "Start Time: ${task.startTime}")
+        Log.d("TaskDuration", "End Time: ${task.endTime}")
+
+        // Calculate the duration in seconds
+        val durationSeconds = (task.endTime - task.startTime) / 1000
+        Log.d("TaskDuration", "Duration: $durationSeconds seconds")
+
+        task.duration = durationSeconds
+
+        // Update the task in the database
+        taskDbHelper.updateTask(task)
+        loadTasks() // Reload tasks from the database
     }
 
     fun deleteTask(position: Int) {
@@ -173,13 +199,6 @@ class Tasks : AppCompatActivity() {
         loadTasks()
         // Resume timers for running tasks
         resumeTimers()
-    }
-
-    private fun loadTasksFromDatabase() {
-        // Load tasks from the database
-        taskList.clear()
-        taskList.addAll(taskDbHelper.getAllTasks())
-        taskAdapter.notifyDataSetChanged()
     }
 
     private fun resumeTimers() {

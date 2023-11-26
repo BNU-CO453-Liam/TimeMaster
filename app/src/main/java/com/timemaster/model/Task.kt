@@ -8,6 +8,8 @@ import android.os.Parcelable
 class Task(val name: String) : Parcelable {
     var id: Int = 0
     var isRunning: Boolean = false
+    var startTime: Long = 0
+    var endTime: Long = 0
     var duration: Long = 0
     var handler: Handler? = null
     var timerRunnable: Runnable? = null
