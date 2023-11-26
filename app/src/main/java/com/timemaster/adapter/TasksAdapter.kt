@@ -97,21 +97,33 @@ class TasksAdapter(
     }
 
     private fun pauseTimer(position: Int) {
-
         val task = taskList[position]
         task.isRunning = false
-
         task.endTime = System.currentTimeMillis()
+
+        // Calculate the duration in seconds
+        val durationSeconds = (task.endTime - task.startTime) / 1000
+
+        // Log statements to help identify the issue
+        Log.d("TaskDuration", "Duration before update: ${task.duration} seconds")
+        Log.d("TaskDuration", "Calculated Duration: $durationSeconds seconds")
+
+        // Update the task in the database with the new end time and duration
+        task.endTime = System.currentTimeMillis()
+        task.duration += durationSeconds
         taskDbHelper.updateTask(task)
 
-        val durationSeconds = (task.endTime - task.startTime) / 1000
-        Log.d("TaskDuration", "Duration: $durationSeconds seconds")
+        // Log statement to check the updated duration
+        Log.d("TaskDuration", "Duration after update: ${task.duration} seconds")
 
-        task.duration = durationSeconds
-        timers[position]?.removeCallbacksAndMessages(null)
-        timers.remove(position)
+        // Update the duration in the task and notify the adapter
+        task.duration += durationSeconds
 
         notifyDataSetChanged()
+
+        // Remove the timer associated with the task
+        timers[position]?.removeCallbacksAndMessages(null)
+        timers.remove(position)
     }
 
     fun updateTimers() {

@@ -155,7 +155,7 @@ class Tasks : AppCompatActivity() {
         val durationSeconds = (task.endTime - task.startTime) / 1000
         Log.d("TaskDuration", "Duration: $durationSeconds seconds")
 
-        task.duration = durationSeconds
+        task.duration += (durationSeconds * 1000)
 
         // Update the task in the database
         taskDbHelper.updateTask(task)
