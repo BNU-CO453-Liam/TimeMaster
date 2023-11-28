@@ -8,11 +8,12 @@ import android.database.sqlite.SQLiteOpenHelper
 class TaskDbHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME, null, DATABASE_VERSION) {
 
     companion object {
-        private const val DATABASE_VERSION = 3
+        private const val DATABASE_VERSION = 4
         private const val DATABASE_NAME = "TaskDatabase"
         private const val TABLE_NAME = "tasks"
         private const val COLUMN_ID = "id"
         private const val COLUMN_NAME = "name"
+        private const val COLUMN_DAILY_TARGET = "daily_target"
         private const val COLUMN_IS_RUNNING = "is_running"
         private const val COLUMN_START_TIME = "start_time"
         private const val COLUMN_END_TIME = "end_time"
@@ -21,7 +22,7 @@ class TaskDbHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME, 
 
     override fun onCreate(db: SQLiteDatabase?) {
         val createTableQuery = ("CREATE TABLE $TABLE_NAME ($COLUMN_ID INTEGER PRIMARY KEY AUTOINCREMENT, "
-                + "$COLUMN_NAME TEXT, $COLUMN_IS_RUNNING INTEGER, $COLUMN_START_TIME INTEGER, "
+                + "$COLUMN_NAME TEXT, $COLUMN_DAILY_TARGET INTEGER, $COLUMN_IS_RUNNING INTEGER, $COLUMN_START_TIME INTEGER, "
                 + "$COLUMN_END_TIME INTEGER, $COLUMN_DURATION INTEGER);")
         db?.execSQL(createTableQuery)
     }
@@ -35,6 +36,7 @@ class TaskDbHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME, 
         val db = this.writableDatabase
         val values = ContentValues()
         values.put(COLUMN_NAME, task.name)
+        values.put(COLUMN_DAILY_TARGET, task.dailyTargetTime)
         values.put(COLUMN_IS_RUNNING, if (task.isRunning) 1 else 0)
         values.put(COLUMN_DURATION, task.duration)
 

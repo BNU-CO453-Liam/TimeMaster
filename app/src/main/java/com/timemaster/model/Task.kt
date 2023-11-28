@@ -10,6 +10,7 @@ class Task(val name: String) : Parcelable {
     var startTime: Long = 0
     var endTime: Long = 0
     var duration: Long = 0
+    var dailyTargetTime: Long = 0
     var handler: Handler? = null
     var timerRunnable: Runnable? = null
 

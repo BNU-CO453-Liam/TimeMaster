@@ -6,10 +6,13 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.util.Log
+import android.view.LayoutInflater
 import android.view.View
+import android.widget.Button
 import android.widget.EditText
-import android.widget.ListView
+import android.widget.TimePicker
 import androidx.annotation.RequiresApi
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -19,6 +22,9 @@ import com.timemaster.R
 import com.timemaster.adapter.TasksAdapter
 import com.timemaster.model.Task
 import com.timemaster.model.TaskDbHelper
+import java.text.SimpleDateFormat
+import java.util.Calendar
+import java.util.Locale
 
 class Tasks : AppCompatActivity() {
 
@@ -36,7 +42,7 @@ class Tasks : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.tasks)
 
-        taskNameEditText = findViewById(R.id.taskNameEditText)
+        //taskNameEditText = findViewById(R.id.taskNameEditText)
         taskRecyclerView = findViewById(R.id.taskRecyclerView) // Updated to RecyclerView
 
         taskList = mutableListOf()
@@ -204,5 +210,64 @@ class Tasks : AppCompatActivity() {
 
     private fun resumeTimers() {
         taskList.filter { it.isRunning }.forEach { startTimer(it) }
+    }
+
+    fun openDialog(view: View) {
+        val dialogView = LayoutInflater.from(view.context).inflate(R.layout.task_dialog, null)
+        val taskNameEditText = dialogView.findViewById<EditText>(R.id.dialogTaskNameEditText)
+        val timePicker = dialogView.findViewById<TimePicker>(R.id.dialogDailyTargetTimePicker)
+        val saveButton = dialogView.findViewById<Button>(R.id.dialogSaveButton)
+
+        // Set 24-hour format for the TimePicker
+        timePicker.setIs24HourView(true)
+
+        val dialog = AlertDialog.Builder(view.context)
+            .setView(dialogView)
+            .create()
+
+        saveButton.setOnClickListener {
+            val taskName = taskNameEditText.text.toString()
+
+            // Get the selected hour and minute from TimePicker
+            val selectedHour = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                timePicker.hour
+            } else {
+                timePicker.currentHour
+            }
+            val selectedMinute = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                timePicker.minute
+            } else {
+                timePicker.currentMinute
+            }
+
+            // Perform your save logic here, e.g., add the task to the database
+            if (taskName.isNotEmpty()) {
+                val newTask = Task(taskName)
+
+                // Set initial values for startTime and endTime
+                newTask.startTime = System.currentTimeMillis()
+                newTask.endTime = System.currentTimeMillis()
+
+                // Set the daily target time
+                val calendar = Calendar.getInstance()
+                calendar.set(Calendar.HOUR_OF_DAY, selectedHour)
+                calendar.set(Calendar.MINUTE, selectedMinute)
+
+                // Format the time as "HH:mm:ss"
+                val dateFormat = SimpleDateFormat("HH:mm:ss", Locale.getDefault())
+                val formattedTime = dateFormat.format(calendar.time)
+
+                // Parse the formatted time to get the time in milliseconds
+                val formattedTimeInMillis = dateFormat.parse(formattedTime)?.time ?: 0
+
+                newTask.dailyTargetTime = formattedTimeInMillis
+
+                taskDbHelper.addTask(newTask)
+                loadTasks() // Reload tasks from the database
+                dialog.dismiss() // Dismiss the dialog after saving
+            }
+        }
+
+        dialog.show()
     }
 }
