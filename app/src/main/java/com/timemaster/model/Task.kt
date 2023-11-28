@@ -3,7 +3,6 @@ package com.timemaster.model
 import android.os.Handler
 import android.os.Parcel
 import android.os.Parcelable
-//import java.util.logging.Handler
 
 class Task(val name: String) : Parcelable {
     var id: Int = 0

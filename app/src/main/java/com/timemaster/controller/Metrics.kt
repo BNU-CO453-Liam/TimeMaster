@@ -13,6 +13,7 @@ import com.github.mikephil.charting.data.PieEntry
 import com.github.mikephil.charting.utils.ColorTemplate
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.timemaster.R
+import com.timemaster.adapter.TasksAdapter
 import com.timemaster.model.TaskDbHelper
 
 class Metrics : AppCompatActivity() {
@@ -57,12 +58,13 @@ class Metrics : AppCompatActivity() {
         // Calculate the total duration from your list of tasks
         val totalDuration = taskList.sumOf { it.duration.toInt() }
 
+
         // Create entries for the doughnut pie chart
         val entries = taskList.map { task ->
             PieEntry((task.duration / totalDuration.toFloat()) * 100, task.name)
         }
 
-        val dataSet = PieDataSet(entries, "Doughnut Chart")
+        val dataSet = PieDataSet(entries, "hide me")
         dataSet.colors = ColorTemplate.COLORFUL_COLORS.toList()
 
         val pieData = PieData(dataSet)
@@ -70,10 +72,18 @@ class Metrics : AppCompatActivity() {
 
         // Customize the pie chart as a doughnut
         doughnutPieChart.isDrawHoleEnabled = true
-        doughnutPieChart.setHoleColor(Color.WHITE)
+        doughnutPieChart.setHoleColor(Color.rgb(23,23, 23))
         doughnutPieChart.setDrawEntryLabels(false)
-        doughnutPieChart.setEntryLabelTextSize(12f)
-        doughnutPieChart.setEntryLabelColor(Color.BLACK)
+        doughnutPieChart.setEntryLabelTextSize(40f)
+        doughnutPieChart.setEntryLabelColor(Color.WHITE)
+
+        doughnutPieChart.setTransparentCircleColor(0)
+        doughnutPieChart.setTransparentCircleAlpha(0)
+
+        doughnutPieChart.holeRadius = 60f
+        //doughnutPieChart.centerText = doughnutPieChart.
+
+        doughnutPieChart.description.isEnabled = false
     }
 
     private fun animateChart(duration: Long = 1400, easing: Easing.EasingFunction = Easing.EaseInOutQuad) {
@@ -100,7 +110,7 @@ class Metrics : AppCompatActivity() {
             PieEntry((task.duration / totalDuration.toFloat()) * 100, task.name)
         }
 
-        val dataSet = PieDataSet(entries, "Doughnut Chart")
+        val dataSet = PieDataSet(entries, "")
         dataSet.colors = ColorTemplate.COLORFUL_COLORS.toList()
 
         val pieData = PieData(dataSet)

@@ -51,10 +51,10 @@ class TasksAdapter(
             toggleTimer(position)
         }
 
-        holder.deleteButton.setOnClickListener {
+        //holder.deleteButton.setOnClickListener {
             //deleteTask(position)
-            onDeleteClickListener.invoke(holder.adapterPosition)
-        }
+            //onDeleteClickListener.invoke(holder.adapterPosition)
+        //}
     }
 
     override fun getItemCount(): Int {
@@ -153,6 +153,6 @@ class TasksAdapter(
         val taskNameTextView: TextView = view.findViewById(R.id.taskNameTextView)
         val timerTextView: TextView = view.findViewById(R.id.timerTextView)
         val playButton: ToggleButton = view.findViewById(R.id.playButton)
-        val deleteButton: Button = view.findViewById(R.id.deleteButton)
+        //val deleteButton: Button = view.findViewById(R.id.deleteButton)
     }
 }
