@@ -94,6 +94,7 @@ class Tasks : AppCompatActivity() {
     private fun loadTasks() {
         taskList.clear()
         taskList.addAll(taskDbHelper.getAllTasks())
+        taskList.reverse()
         taskAdapter.notifyDataSetChanged()
     }
 
