@@ -5,6 +5,7 @@ import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.descendants
 import com.github.mikephil.charting.animation.Easing
 import com.github.mikephil.charting.charts.PieChart
 import com.github.mikephil.charting.data.PieData
@@ -73,8 +74,8 @@ class Metrics : AppCompatActivity() {
         // Customize the pie chart as a doughnut
         doughnutPieChart.isDrawHoleEnabled = true
         doughnutPieChart.setHoleColor(Color.rgb(23,23, 23))
-        doughnutPieChart.setDrawEntryLabels(false)
-        doughnutPieChart.setEntryLabelTextSize(40f)
+        doughnutPieChart.setDrawEntryLabels(true)
+        doughnutPieChart.setEntryLabelTextSize(30f)
         doughnutPieChart.setEntryLabelColor(Color.WHITE)
 
         doughnutPieChart.setTransparentCircleColor(0)
@@ -84,6 +85,12 @@ class Metrics : AppCompatActivity() {
         //doughnutPieChart.centerText = doughnutPieChart.
 
         doughnutPieChart.description.isEnabled = false
+
+        // set text for no data
+        doughnutPieChart.setNoDataText("No data to display")
+
+        // disable legend
+        doughnutPieChart.legend.isEnabled = false
     }
 
     private fun animateChart(duration: Long = 1400, easing: Easing.EasingFunction = Easing.EaseInOutQuad) {
