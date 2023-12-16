@@ -51,22 +51,33 @@ class Performance : AppCompatActivity() {
 
         // Create entries for the BarChart
         val entries = mutableListOf<BarEntry>()
+        val entries2 = mutableListOf<BarEntry>()
 
         tasks.forEachIndexed { index, task ->
             // Convert duration to minutes for simplicity (customize as needed)
             val durationInMillis = task.duration.toFloat()
+            val targetDurationInMillis = task.dailyTargetTime.toFloat()
 
             // Log the values for debugging
-            Log.d("PerformanceActivity", "Task: ${task.name}, TaskDuration: ${task.duration}  Duration in minutes: $durationInMillis minutes")
+            Log.d("PerformanceActivity", "Task: ${task.name}, CurrentDuration: ${task.duration}, TaskDailyDuration: ${task.dailyTargetTime} ")
 
             // Create a BarEntry with duration and task index
             entries.add(BarEntry(index.toFloat(), durationInMillis))
+            entries2.add(BarEntry(index.toFloat(), targetDurationInMillis))
         }
 
         // Create a BarDataSet with the entries
-        val dataSet = BarDataSet(entries, "Task Durations")
+        val dataSet = BarDataSet(entries, "Current Durations")
+        dataSet.setDrawValues(false)
 
-        val barData = BarData(dataSet)
+        val dataSet2 = BarDataSet(entries2, "")
+        dataSet2.setDrawValues(false)
+
+        dataSet2.barBorderColor = Color.rgb(127, 231, 254)
+        dataSet2.barBorderWidth = 2f
+        dataSet2.color = Color.TRANSPARENT
+
+        val barData = BarData(dataSet2, dataSet)
 
         // Customize axes
         setupXAxis(barChart.xAxis, tasks)
@@ -93,13 +104,11 @@ class Performance : AppCompatActivity() {
         startActivity(intent)
     }
 
-    private class YAxisDurationFormatter : ValueFormatter() {
+    class YAxisDurationFormatter : ValueFormatter() {
         override fun getAxisLabel(value: Float, axis: AxisBase?): String {
-            // Convert the value (assumed to be in milliseconds) to a formatted time string
             val minutes = (value / 1000 / 60).toInt()
-            val seconds = (value / 1000 % 60).toInt()
-
-            return String.format("%02d:00", minutes, seconds)
+            val formattedMinutes = (minutes % 60).toString().padStart(2, '0')
+            return "00:$formattedMinutes"
         }
     }
 
@@ -115,13 +124,13 @@ class Performance : AppCompatActivity() {
         // Display the Y-axis on the left side only
         yAxis.axisMinimum = 0f
 
-        val twntyFourHours = 10 * 60 * 1000
+        val tenMinutes = 10 * 60 * 1000 // 10 minutes in milliseconds
 
-        yAxis.axisMaximum = twntyFourHours.toFloat()
+        yAxis.axisMaximum = tenMinutes.toFloat()
         yAxis.setPosition(YAxis.YAxisLabelPosition.OUTSIDE_CHART)
         yAxis.setDrawAxisLine(true) // Disable drawing the Y-axis line on the right side
         yAxis.valueFormatter = YAxisDurationFormatter()
-        yAxis.textColor = Color.rgb(200,200,200)
+        yAxis.textColor = Color.rgb(200, 200, 200)
     }
 
     private fun setupRightAxis(rightAxis: YAxis) {

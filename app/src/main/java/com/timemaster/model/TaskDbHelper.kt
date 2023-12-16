@@ -4,6 +4,7 @@ import android.content.ContentValues
 import android.content.Context
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
+import android.util.Log
 
 class TaskDbHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME, null, DATABASE_VERSION) {
 
@@ -40,6 +41,8 @@ class TaskDbHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME, 
         values.put(COLUMN_IS_RUNNING, if (task.isRunning) 1 else 0)
         values.put(COLUMN_DURATION, task.duration)
 
+        Log.d("TaskDbHelper", "Task: ${task.name}, TaskDailyDuration: ${task.dailyTargetTime} ")
+
         db.insert(TABLE_NAME, null, values)
         db.close()
     }
@@ -62,10 +65,12 @@ class TaskDbHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME, 
             val taskId = cursor.getLong(cursor.getColumnIndexOrThrow(COLUMN_ID))
             val taskName = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_NAME))
             val taskDuration = cursor.getInt(cursor.getColumnIndexOrThrow(COLUMN_DURATION))
+            val taskTargetDuration = cursor.getInt(cursor.getColumnIndexOrThrow(COLUMN_DAILY_TARGET))
 
             val task = Task(taskName)
             task.id = taskId.toInt()
             task.duration = taskDuration.toLong()
+            task.dailyTargetTime = taskTargetDuration.toLong()
 
             tasks.add(task)
         }
@@ -82,6 +87,7 @@ class TaskDbHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME, 
         values.put(COLUMN_START_TIME, task.startTime)
         values.put(COLUMN_END_TIME, task.endTime)
         values.put(COLUMN_DURATION, task.duration)
+        values.put(COLUMN_DAILY_TARGET, task.dailyTargetTime)
         values.put(COLUMN_IS_RUNNING, if (task.isRunning) 1 else 0)
 
         val db = this.writableDatabase

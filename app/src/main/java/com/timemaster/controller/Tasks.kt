@@ -220,6 +220,8 @@ class Tasks : AppCompatActivity() {
 
         // Set 24-hour format for the TimePicker
         timePicker.setIs24HourView(true)
+        timePicker.hour = 1
+        timePicker.minute = 0
 
         val dialog = AlertDialog.Builder(view.context)
             .setView(dialogView)
@@ -248,19 +250,11 @@ class Tasks : AppCompatActivity() {
                 newTask.startTime = System.currentTimeMillis()
                 newTask.endTime = System.currentTimeMillis()
 
+                // Calculate the time in milliseconds
+                val selectedTimeInMillis = (selectedHour * 60 + selectedMinute) * 60 * 1000L
+
                 // Set the daily target time
-                val calendar = Calendar.getInstance()
-                calendar.set(Calendar.HOUR_OF_DAY, selectedHour)
-                calendar.set(Calendar.MINUTE, selectedMinute)
-
-                // Format the time as "HH:mm:ss"
-                val dateFormat = SimpleDateFormat("HH:mm:ss", Locale.getDefault())
-                val formattedTime = dateFormat.format(calendar.time)
-
-                // Parse the formatted time to get the time in milliseconds
-                val formattedTimeInMillis = dateFormat.parse(formattedTime)?.time ?: 0
-
-                newTask.dailyTargetTime = formattedTimeInMillis
+                newTask.dailyTargetTime = selectedTimeInMillis
 
                 taskDbHelper.addTask(newTask)
                 loadTasks() // Reload tasks from the database

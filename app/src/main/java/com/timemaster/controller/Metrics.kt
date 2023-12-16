@@ -112,6 +112,7 @@ class Metrics : AppCompatActivity() {
 
         val dataSet = PieDataSet(entries, "")
         dataSet.colors = ColorTemplate.COLORFUL_COLORS.toList()
+        dataSet.setDrawValues(false)
 
         val pieData = PieData(dataSet)
         doughnutPieChart.data = pieData
