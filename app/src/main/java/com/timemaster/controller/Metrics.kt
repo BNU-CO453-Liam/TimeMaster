@@ -3,9 +3,7 @@ package com.timemaster.controller
 import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
-import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.descendants
 import com.github.mikephil.charting.animation.Easing
 import com.github.mikephil.charting.charts.PieChart
 import com.github.mikephil.charting.data.PieData
@@ -14,7 +12,6 @@ import com.github.mikephil.charting.data.PieEntry
 import com.github.mikephil.charting.utils.ColorTemplate
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.timemaster.R
-import com.timemaster.adapter.TasksAdapter
 import com.timemaster.model.TaskDbHelper
 
 class Metrics : AppCompatActivity() {
@@ -65,7 +62,7 @@ class Metrics : AppCompatActivity() {
             PieEntry((task.duration / totalDuration.toFloat()) * 100, task.name)
         }
 
-        val dataSet = PieDataSet(entries, "hide me")
+        val dataSet = PieDataSet(entries, "")
         dataSet.colors = ColorTemplate.COLORFUL_COLORS.toList()
 
         val pieData = PieData(dataSet)
@@ -102,15 +99,8 @@ class Metrics : AppCompatActivity() {
         val dbHelper = TaskDbHelper(this)
         val taskList = dbHelper.getAllTasks()
 
-        // Log the duration values for debugging
-        taskList.forEachIndexed { index, task ->
-            Log.i("Tasks", "Task $index - Name: ${task.name}, Duration: ${task.duration}")
-        }
-
         // Calculate the total duration from your list of tasks
         val totalDuration = taskList.sumBy { it.duration.toInt() }
-
-        Log.i("Tasks", "Total Duration: $totalDuration")
 
         // Create entries for the doughnut pie chart
         val entries = taskList.map { task ->
