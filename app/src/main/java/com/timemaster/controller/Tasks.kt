@@ -51,7 +51,7 @@ class Tasks : AppCompatActivity() {
 
         // Create TasksAdapter with onDeleteClickListener
         taskAdapter = TasksAdapter(this, taskList, taskDbHelper) { position ->
-            // Handle onDeleteClickListener logic here, e.g., delete the task
+            // Handle onDeleteClickListener
             deleteTask(position)
         }
 
@@ -60,8 +60,6 @@ class Tasks : AppCompatActivity() {
         taskRecyclerView.adapter = taskAdapter
 
         timerHandler = Handler(Looper.getMainLooper())
-
-
 
         // Find the Floating Action Buttons
         val fab3: FloatingActionButton = findViewById(R.id.floatingActionButton3)
@@ -89,7 +87,7 @@ class Tasks : AppCompatActivity() {
 
             override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
                 val position = viewHolder.adapterPosition
-                // Handle swipe action, e.g., delete the task
+                // Handle swipe action
                 deleteTask(position)
             }
         })
@@ -242,7 +240,7 @@ class Tasks : AppCompatActivity() {
                 timePicker.currentMinute
             }
 
-            // Perform your save logic here, e.g., add the task to the database
+            // update task time to db
             if (taskName.isNotEmpty()) {
                 val newTask = Task(taskName)
 

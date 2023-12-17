@@ -28,11 +28,13 @@ class TaskDbHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME, 
         db?.execSQL(createTableQuery)
     }
 
+    // upgrade db
     override fun onUpgrade(db: SQLiteDatabase?, oldVersion: Int, newVersion: Int) {
         db?.execSQL("DROP TABLE IF EXISTS $TABLE_NAME")
         onCreate(db)
     }
 
+    // add task
     fun addTask(task: Task) {
         val db = this.writableDatabase
         val values = ContentValues()
@@ -47,6 +49,7 @@ class TaskDbHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME, 
         db.close()
     }
 
+    // delete task
     fun deleteTask(taskId: Int): Boolean {
         val db = this.writableDatabase
         return try {
@@ -56,6 +59,7 @@ class TaskDbHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME, 
         }
     }
 
+    // get tasks
     fun getAllTasks(): List<Task> {
         val tasks = mutableListOf<Task>()
         val db = readableDatabase
