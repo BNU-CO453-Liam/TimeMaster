@@ -104,9 +104,12 @@ class Performance : AppCompatActivity() {
 
     class YAxisDurationFormatter : ValueFormatter() {
         override fun getAxisLabel(value: Float, axis: AxisBase?): String {
+            val hours = (value / 1000 / 60 / 60).toInt()
             val minutes = (value / 1000 / 60).toInt()
+
+            val formattedHours = hours.toString().padStart(2, '0')
             val formattedMinutes = (minutes % 60).toString().padStart(2, '0')
-            return "00:$formattedMinutes"
+            return "$formattedHours:$formattedMinutes"
         }
     }
 
@@ -127,13 +130,14 @@ class Performance : AppCompatActivity() {
         // Display the Y-axis on the left side only
         yAxis.axisMinimum = 0f
 
-        val fiveHours = 5 * 60 * 60 * 1000 // sixteen hours in milliseconds
+        val fiveHours = 5 * 60 * 1000 // sixteen hours in milliseconds
 
         yAxis.axisMaximum = fiveHours.toFloat()
         yAxis.setPosition(YAxis.YAxisLabelPosition.OUTSIDE_CHART)
         yAxis.setDrawAxisLine(true) // Disable drawing the Y-axis line on the right side
         yAxis.valueFormatter = YAxisDurationFormatter()
         yAxis.textColor = Color.rgb(200, 200, 200)
+        yAxis.setLabelCount(6, true)
     }
 
     private fun setupRightAxis(rightAxis: YAxis) {
@@ -143,7 +147,7 @@ class Performance : AppCompatActivity() {
     }
 
     private fun setupLeftAxis(leftAxis: YAxis) {
-        leftAxis.setDrawLabels(false)
+        leftAxis.setDrawLabels(true)
         leftAxis.setDrawAxisLine(true)
         leftAxis.setDrawGridLines(false)
         leftAxis.textSize = 15f
