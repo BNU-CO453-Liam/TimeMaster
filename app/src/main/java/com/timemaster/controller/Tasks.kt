@@ -148,17 +148,11 @@ class Tasks : AppCompatActivity() {
     }
 
     private fun pauseTimer(task: Task) {
-        Log.d("TaskDuration", "Pause Timer function called")
         task.isRunning = false
         task.endTime = System.currentTimeMillis()
 
-        // Log the start time, end time, and calculated duration
-        Log.d("TaskDuration", "Start Time: ${task.startTime}")
-        Log.d("TaskDuration", "End Time: ${task.endTime}")
-
         // Calculate the duration in seconds
         val durationSeconds = (task.endTime - task.startTime) / 1000
-        Log.d("TaskDuration", "Duration: $durationSeconds seconds")
 
         task.duration += (durationSeconds * 1000)
 

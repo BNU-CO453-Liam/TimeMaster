@@ -3,6 +3,8 @@ package com.timemaster.controller
 import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
+import android.util.Log
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.github.mikephil.charting.charts.BarChart
 import com.github.mikephil.charting.components.AxisBase
@@ -11,8 +13,11 @@ import com.github.mikephil.charting.components.YAxis
 import com.github.mikephil.charting.data.BarData
 import com.github.mikephil.charting.data.BarDataSet
 import com.github.mikephil.charting.data.BarEntry
+import com.github.mikephil.charting.data.Entry
 import com.github.mikephil.charting.formatter.IndexAxisValueFormatter
 import com.github.mikephil.charting.formatter.ValueFormatter
+import com.github.mikephil.charting.highlight.Highlight
+import com.github.mikephil.charting.listener.OnChartValueSelectedListener
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.timemaster.R
 import com.timemaster.model.Task
@@ -55,7 +60,7 @@ class Performance : AppCompatActivity() {
         tasks.forEachIndexed { index, task ->
             val taskName = task.name
             taskNames.add(taskName)
-            // Convert duration to minutes for simplicity (customize as needed)
+            // Convert duration to minutes for simplicity
             val durationInMillis = task.duration.toFloat()
             val targetDurationInMillis = task.dailyTargetTime.toFloat()
 
@@ -94,7 +99,38 @@ class Performance : AppCompatActivity() {
         barChart.setFitBars(true)
         barChart.legend.isEnabled = false
 
+        // Set up the click listener
+        barChart.setOnChartValueSelectedListener(object : OnChartValueSelectedListener {
+            override fun onValueSelected(e: Entry?, h: Highlight?) {
+                // Handle the click event
+                if (e != null) {
+                    val index = e.x.toInt()
+                    val taskName = taskNames.getOrNull(index)
+                    val currentDuration = entries.getOrNull(index)?.y?.toInt() ?:0
+                    val targetDuration = entries2.getOrNull(index)?.y?.toInt() ?: 0
+
+                    val displayTarget = formatTime(targetDuration.toLong())
+                    val displayCurrent = formatTime(currentDuration.toLong())
+
+                    val message = "Task: $taskName\nDaily Target: $displayTarget\nCurrent Duration: $displayCurrent"
+                    Toast.makeText(applicationContext, message, Toast.LENGTH_LONG).show()
+                }
+            }
+
+            override fun onNothingSelected() {
+                // do nothing
+            }
+        })
+
         barChart.invalidate()
+    }
+
+    fun formatTime(milliseconds: Long): String {
+        val hours = (milliseconds / (1000 * 60 * 60)).toInt()
+        val minutes = ((milliseconds % (1000 * 60 * 60)) / (1000 * 60)).toInt()
+        val seconds = ((milliseconds % (1000 * 60)) / 1000).toInt()
+
+        return String.format("%02d:%02d:%02d", hours, minutes, seconds)
     }
 
     private fun openActivity(activityClass: Class<*>) {
