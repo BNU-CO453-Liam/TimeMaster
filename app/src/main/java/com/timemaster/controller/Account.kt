@@ -5,6 +5,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.widget.Button
 import android.widget.EditText
+import android.widget.Switch
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -12,8 +13,11 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import com.timemaster.R
+import com.timemaster.model.TaskDbHelper
 
 class Account : AppCompatActivity() {
+
+    private lateinit var taskDbHelper: TaskDbHelper
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.account)
@@ -24,6 +28,8 @@ class Account : AppCompatActivity() {
         val resetPassword = findViewById<TextView>(R.id.reset_password)
 
         val email = FirebaseAuth.getInstance().currentUser!!.email.toString()
+        val switchDataSharing = findViewById<Switch>(R.id.switch1)
+
 
 
         // set email field hint
@@ -74,6 +80,8 @@ class Account : AppCompatActivity() {
             alertDialog.show()
         }
 
+
+
         // Click event of password reset button
         resetPassword.setOnClickListener {
 
@@ -89,6 +97,25 @@ class Account : AppCompatActivity() {
                     }
                 }
         }
+
+        // Check if data sharing is enabled
+        switchDataSharing.setOnCheckedChangeListener { _, isChecked ->
+            if (isChecked) {
+                // Retrieve tasks from SQLite database
+                val dbHelper = TaskDbHelper(this)
+                val tasks = dbHelper.getAllTasks()
+
+                // Synchronize data with Firestore
+                dbHelper.addTasksToFirestore(this, tasks, true)
+            } else {
+                // Data sharing is disabled, remove tasks from Firestore
+                val dbHelper = TaskDbHelper(this)
+
+                // Call the function with shareData set to false
+                dbHelper.addTasksToFirestore(this, emptyList(), false)
+            }
+        }
+
     }
 
     /**

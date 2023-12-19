@@ -80,6 +80,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/et_profile_email" />
 
+
     <TextView
         android:id="@+id/reset_password"
         android:layout_width="wrap_content"
@@ -91,5 +92,16 @@
         app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/btn_delete_profile" />
+
+    <Switch
+        android:id="@+id/switch1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Share data"
+        android:textColor="#918C8C"
+        app:layout_constraintBottom_toTopOf="@+id/btn_update_profile"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv_profile_passwd" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

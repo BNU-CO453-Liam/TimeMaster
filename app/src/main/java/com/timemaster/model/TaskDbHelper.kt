@@ -5,6 +5,10 @@ import android.content.Context
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
 import android.util.Log
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.ktx.firestore
+import com.google.firebase.ktx.Firebase
 
 class TaskDbHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME, null, DATABASE_VERSION) {
 
@@ -101,5 +105,54 @@ class TaskDbHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME, 
         db.update(TABLE_NAME, values, selection, args)
 
         db.close()
+    }
+
+    fun addTasksToFirestore(context: Context, tasks: List<Task>, shareData: Boolean) {
+        val user = FirebaseAuth.getInstance().currentUser
+        val userId = user?.uid
+
+        if (userId != null) {
+            val db = Firebase.firestore
+            val userDocRef = db.collection("task_info").document(userId)
+
+            // Clear existing tasks if the user chooses not to share data
+            if (!shareData) {
+                userDocRef.collection("tasks")
+                    .get()
+                    .addOnSuccessListener { querySnapshot ->
+                        for (document in querySnapshot.documents) {
+                            // Delete each task document
+                            userDocRef.collection("tasks").document(document.id).delete()
+                                .addOnSuccessListener {
+                                    Log.d("TaskDbHelper", "Task removed from Firestore: ${document.id}")
+                                }
+                                .addOnFailureListener { e ->
+                                    Log.e("TaskDbHelper", "Error removing task from Firestore", e)
+                                }
+                        }
+                    }
+                    .addOnFailureListener { e ->
+                        Log.e("TaskDbHelper", "Error retrieving tasks from Firestore", e)
+                    }
+            }
+
+            // Add new tasks to Firestore
+            for (task in tasks) {
+                val taskData = hashMapOf(
+                    "Task" to task.name,
+                    "daily_target" to task.dailyTargetTime,
+                    "duration" to task.duration
+                )
+
+                // Add task data to Firestore
+                userDocRef.collection("tasks").add(taskData)
+                    .addOnSuccessListener { documentReference ->
+                        Log.d("TaskDbHelper", "Task added to Firestore with ID: ${documentReference.id}")
+                    }
+                    .addOnFailureListener { e ->
+                        Log.e("TaskDbHelper", "Error adding task to Firestore", e)
+                    }
+            }
+        }
     }
 }
