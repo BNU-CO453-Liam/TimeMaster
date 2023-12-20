@@ -22,6 +22,7 @@ class Account : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.account)
 
+        val etProfileUserID = findViewById<TextView>(R.id.et_profile_user_id)
         val etProfileEmail = findViewById<EditText>(R.id.et_profile_email)
         val updateBtn = findViewById<Button>(R.id.btn_update_profile)
         val deleteBtn = findViewById<Button>(R.id.btn_delete_profile)
@@ -30,7 +31,7 @@ class Account : AppCompatActivity() {
         val email = FirebaseAuth.getInstance().currentUser!!.email.toString()
         val switchDataSharing = findViewById<Switch>(R.id.switch1)
 
-
+        etProfileUserID.hint = "ID: " + FirebaseAuth.getInstance().currentUser!!.uid
 
         // set email field hint
         etProfileEmail.hint = email

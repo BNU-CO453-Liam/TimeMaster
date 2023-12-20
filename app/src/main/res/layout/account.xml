@@ -8,6 +8,24 @@
     android:background="@drawable/prof">
 
 
+    <TextView
+        android:id="@+id/et_profile_user_id"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#00000000"
+        android:gravity="center"
+        android:hint="user_ID"
+        android:padding="10dp"
+        android:textColor="#7E7E7E"
+        android:textColorHint="#808080"
+        android:textSize="15sp"
+        app:layout_constraintBottom_toTopOf="@+id/et_profile_email"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.907" />
+
     <Button
         android:id="@+id/btn_update_profile"
         style="?android:attr/borderlessButtonStyle"

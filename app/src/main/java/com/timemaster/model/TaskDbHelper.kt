@@ -6,7 +6,7 @@ import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
 import android.util.Log
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 
@@ -117,23 +117,7 @@ class TaskDbHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME, 
 
             // Clear existing tasks if the user chooses not to share data
             if (!shareData) {
-                userDocRef.collection("tasks")
-                    .get()
-                    .addOnSuccessListener { querySnapshot ->
-                        for (document in querySnapshot.documents) {
-                            // Delete each task document
-                            userDocRef.collection("tasks").document(document.id).delete()
-                                .addOnSuccessListener {
-                                    Log.d("TaskDbHelper", "Task removed from Firestore: ${document.id}")
-                                }
-                                .addOnFailureListener { e ->
-                                    Log.e("TaskDbHelper", "Error removing task from Firestore", e)
-                                }
-                        }
-                    }
-                    .addOnFailureListener { e ->
-                        Log.e("TaskDbHelper", "Error retrieving tasks from Firestore", e)
-                    }
+                deleteFirestoreTasks(userDocRef)
             }
 
             // Add new tasks to Firestore
@@ -154,5 +138,57 @@ class TaskDbHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME, 
                     }
             }
         }
+    }
+
+    private fun deleteFirestoreTasks(userDocRef: DocumentReference) {
+        userDocRef.collection("tasks")
+            .get()
+            .addOnSuccessListener { querySnapshot ->
+                for (document in querySnapshot.documents) {
+                    // Delete each task document
+                    userDocRef.collection("tasks").document(document.id).delete()
+                        .addOnSuccessListener {
+                            Log.d("TaskDbHelper", "Task removed from Firestore: ${document.id}")
+                        }
+                        .addOnFailureListener { e ->
+                            Log.e("TaskDbHelper", "Error removing task from Firestore", e)
+                        }
+                }
+            }
+            .addOnFailureListener { e ->
+                Log.e("TaskDbHelper", "Error retrieving tasks from Firestore", e)
+            }
+    }
+
+    fun displayTasksForUserId(
+        userId: String,
+        onSuccess: (List<SharedTask>) -> Unit,
+        onFailure: (Exception) -> Unit
+    ) {
+        val db = Firebase.firestore
+        val userDocRef = db.collection("task_info").document(userId)
+
+        // Retrieve tasks from Firestore
+        userDocRef.collection("tasks")
+            .get()
+            .addOnSuccessListener { querySnapshot ->
+                Log.d("Shared_data","user ID: $userId " + "Number of documents: ${querySnapshot.size()}")
+                val tasksList = mutableListOf<SharedTask>()
+
+                for (document in querySnapshot.documents) {
+                    // Parse task data and create Task objects
+                    val taskName = document.getString("Task") ?: ""
+                    val dailyTarget = document.getLong("daily_target") ?: 0
+                    val duration = document.getLong("duration") ?: 0
+
+                    val task = SharedTask(taskName, dailyTarget.toInt(), duration.toInt())
+                    tasksList.add(task)
+                }
+
+                onSuccess.invoke(tasksList)
+            }
+            .addOnFailureListener { e ->
+                onFailure.invoke(e)
+            }
     }
 }
