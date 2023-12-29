@@ -26,7 +26,7 @@ class Menu(private val context: Context) {
                     true
                 }
                 R.id.menu_item3 -> {
-                    onItemClick(2)
+                    onItemClick(3)
                     true
                 }
                 else -> false
@@ -38,17 +38,17 @@ class Menu(private val context: Context) {
     private fun onItemClick(item: Int) {
         when (item) {
             1 -> {
-                // Code to start ActivityA when item 1 is clicked
+                // start Account activity
                 val intent = Intent(context, Account::class.java)
                 context.startActivity(intent)
             }
             2 -> {
-                // Code to start ActivityA when item 1 is clicked
+                // start shared data activity
                 val intent = Intent(context, SharedData::class.java)
                 context.startActivity(intent)
             }
             3 -> {
-                // Code to start ActivityB when item 2 is clicked
+                // logout user
                 Firebase.auth.signOut()
                 val intent = Intent(context, Login::class.java)
                 intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK

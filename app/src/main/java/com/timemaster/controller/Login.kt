@@ -26,9 +26,6 @@ class Login : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.login)
 
-        // database handler
-        val databaseController = AppUserDatabase(this)
-
         // get reference to elements
         val button = findViewById<Button>(R.id.btn_login)
         val entEmail = findViewById<EditText>(R.id.tx_login_email)
@@ -105,37 +102,19 @@ class Login : AppCompatActivity() {
 
         // on click of register button
         register.setOnClickListener {
-
-            // Check how many profiles exist
-            val profileCount = databaseController.getCount()
-
-            if (profileCount > 0) {
-                Toast.makeText(
-                    applicationContext,
-                    "A Profile already exists on this device",
-                    Toast.LENGTH_LONG
-                ).show()
-            } else {
                 startActivity(Intent(this@Login, Register::class.java))
-            }
         }
 
-        // Click event of password reset button
+        // Click event of forgot password
         forgotPassword.setOnClickListener {
-
-            // if a user is registered on the device
-            if (databaseController.getCount() > 0) {
-
-                showDialog(databaseController)
-            }
+            showDialog()
         }
     }
 
     /**
      * Show a dialog for the user to enter email
      */
-    private fun showDialog(databaseController: AppUserDatabase) {
-        val validEmail = databaseController.viewProfile()[0].username
+    private fun showDialog() {
 
         val builder = AlertDialog.Builder(this)
         val inflater: LayoutInflater = layoutInflater
@@ -147,15 +126,22 @@ class Login : AppCompatActivity() {
             setPositiveButton("Send") { _, _ ->
                 val inputEmail = etEmail.text.toString().trim { it <= ' ' }
 
-                if (inputEmail == validEmail) {
-                    sendResetEmail(validEmail)
-                } else {
-                    Toast.makeText(
-                        this@Login,
-                        "Invalid email",
-                        Toast.LENGTH_SHORT
-                    ).show()
-                }
+                Firebase.auth.sendPasswordResetEmail(inputEmail)
+                    .addOnCompleteListener { task ->
+                        if (task.isSuccessful) {
+                            Toast.makeText(
+                                this@Login,
+                                "An email has been sent successfully",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        } else {
+                            Toast.makeText(
+                                this@Login,
+                                "Invalid email",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        }
+                    }
             }
             setNegativeButton("Cancel") { dialogInterface, _ ->
                 dialogInterface.dismiss()
@@ -163,21 +149,5 @@ class Login : AppCompatActivity() {
             setView(dialogLayout)
             show()
         }
-    }
-
-    /**
-     * Send reset password email from firebase
-     */
-    private fun sendResetEmail(validEmail: String) {
-        Firebase.auth.sendPasswordResetEmail(validEmail)
-            .addOnCompleteListener { task ->
-                if (task.isSuccessful) {
-                    Toast.makeText(
-                        this@Login,
-                        "An email has been sent successfully",
-                        Toast.LENGTH_SHORT
-                    ).show()
-                }
-            }
     }
 }

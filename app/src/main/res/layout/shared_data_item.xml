@@ -20,19 +20,22 @@
             android:id="@+id/taskNameTextView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Task Name" />
+            android:text="Task Name"
+            android:textColor="#7E7E7E"/>
 
         <TextView
             android:id="@+id/dailyTargetTextView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Daily Target" />
+            android:text="Daily Target"
+            android:textColor="#7E7E7E"/>
 
         <TextView
             android:id="@+id/durationTextView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Duration" />
+            android:text="Duration"
+            android:textColor="#7E7E7E"/>
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

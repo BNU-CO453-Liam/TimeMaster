@@ -2,6 +2,8 @@ package com.timemaster.model
 
 data class SharedTask(
     val name: String,
-    val dailyTargetTime: Int,
-    val duration: Int
+    val dailyTargetTime: Long,
+    val duration: Long,
+    val formattedDuration: String,
+    val formattedTarget: String
     )

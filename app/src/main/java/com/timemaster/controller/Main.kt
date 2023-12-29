@@ -32,7 +32,7 @@ class Main : AppCompatActivity() {
             }
 
             override fun onFinish() {
-                // Handle when the countdown is finished (optional)
+                // Could add alert
             }
         }
 

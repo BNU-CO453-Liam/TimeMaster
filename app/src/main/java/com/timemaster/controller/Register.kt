@@ -80,7 +80,7 @@ class Register : AppCompatActivity() {
                     // Send email verification
                     firebaseUser.sendEmailVerification()
 
-                    // Update UI or perform additional actions as needed
+                    // success alert
                     Toast.makeText(
                         this@Register,
                         "Success. A verification email has been sent.",

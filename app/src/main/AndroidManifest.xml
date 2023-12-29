@@ -15,6 +15,7 @@
 
         <activity
             android:name=".controller.Login"
+            android:windowSoftInputMode="adjustPan"
             android:exported="true">
 
             <intent-filter>
@@ -26,6 +27,7 @@
 
         <activity
             android:name=".controller.Register"
+            android:windowSoftInputMode="adjustPan"
             android:exported="false">
         </activity>
 
@@ -58,6 +60,7 @@
 
         <activity
             android:name=".controller.SharedData"
+            android:windowSoftInputMode="adjustPan"
             android:exported="false">
         </activity>
 

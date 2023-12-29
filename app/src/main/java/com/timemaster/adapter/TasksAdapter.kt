@@ -50,11 +50,6 @@ class TasksAdapter(
         holder.playButton.setOnClickListener {
             toggleTimer(position)
         }
-
-        //holder.deleteButton.setOnClickListener {
-            //deleteTask(position)
-            //onDeleteClickListener.invoke(holder.adapterPosition)
-        //}
     }
 
     override fun getItemCount(): Int {
@@ -104,17 +99,10 @@ class TasksAdapter(
         // Calculate the duration in seconds
         val durationSeconds = (task.endTime - task.startTime) / 1000
 
-        // Log statements to help identify the issue
-        Log.d("TaskDuration", "Duration before update: ${task.duration} seconds")
-        Log.d("TaskDuration", "Calculated Duration: $durationSeconds seconds")
-
         // Update the task in the database with the new end time and duration
         task.endTime = System.currentTimeMillis()
         task.duration += durationSeconds
         taskDbHelper.updateTask(task)
-
-        // Log statement to check the updated duration
-        Log.d("TaskDuration", "Duration after update: ${task.duration} seconds")
 
         // Update the duration in the task and notify the adapter
         task.duration += durationSeconds
@@ -153,6 +141,5 @@ class TasksAdapter(
         val taskNameTextView: TextView = view.findViewById(R.id.taskNameTextView)
         val timerTextView: TextView = view.findViewById(R.id.timerTextView)
         val playButton: ToggleButton = view.findViewById(R.id.playButton)
-        //val deleteButton: Button = view.findViewById(R.id.deleteButton)
     }
 }

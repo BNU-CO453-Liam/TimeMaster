@@ -9,6 +9,8 @@ import com.github.mikephil.charting.charts.PieChart
 import com.github.mikephil.charting.data.PieData
 import com.github.mikephil.charting.data.PieDataSet
 import com.github.mikephil.charting.data.PieEntry
+import com.github.mikephil.charting.formatter.PercentFormatter
+import com.github.mikephil.charting.formatter.ValueFormatter
 import com.github.mikephil.charting.utils.ColorTemplate
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.timemaster.R
@@ -31,14 +33,12 @@ class Metrics : AppCompatActivity() {
 
         // Find the Floating Action Buttons
         val fab3: FloatingActionButton = findViewById(R.id.floatingActionButton3)
-        val fab4: FloatingActionButton = findViewById(R.id.floatingActionButton4)
         val fab5: FloatingActionButton = findViewById(R.id.floatingActionButton5)
         val fab6: FloatingActionButton = findViewById(R.id.floatingActionButton6)
         val menu by lazy { Menu(this) }
 
         // Set click listeners for each button
         fab3.setOnClickListener { openActivity(Tasks::class.java) }
-        fab4.setOnClickListener { openActivity(Metrics::class.java) }
         fab5.setOnClickListener { openActivity(Performance::class.java) }
         fab6.setOnClickListener { menu.showPopupMenu(it) }
     }
@@ -79,8 +79,6 @@ class Metrics : AppCompatActivity() {
         doughnutPieChart.setTransparentCircleAlpha(0)
 
         doughnutPieChart.holeRadius = 60f
-        //doughnutPieChart.centerText = doughnutPieChart.
-
         doughnutPieChart.description.isEnabled = false
 
         // set text for no data
@@ -107,12 +105,19 @@ class Metrics : AppCompatActivity() {
             PieEntry((task.duration / totalDuration.toFloat()) * 100, task.name)
         }
 
+        // customise data text
         val dataSet = PieDataSet(entries, "")
         dataSet.colors = ColorTemplate.COLORFUL_COLORS.toList()
-        dataSet.setDrawValues(false)
+        dataSet.setDrawValues(true)
+        dataSet.valueTextSize = 23f
 
+        // set piechart data
         val pieData = PieData(dataSet)
         doughnutPieChart.data = pieData
+
+        // set percentage values to be shown
+        pieData.setValueFormatter(PercentFormatter(doughnutPieChart))
+        doughnutPieChart.setUsePercentValues(true)
 
         // Refresh the chart
         doughnutPieChart.invalidate()

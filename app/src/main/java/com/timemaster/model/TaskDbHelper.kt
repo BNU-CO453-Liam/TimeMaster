@@ -5,10 +5,12 @@ import android.content.Context
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
 import android.util.Log
+import android.widget.Toast
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
+import androidx.appcompat.app.AppCompatActivity
 
 class TaskDbHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME, null, DATABASE_VERSION) {
 
@@ -172,7 +174,6 @@ class TaskDbHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME, 
         userDocRef.collection("tasks")
             .get()
             .addOnSuccessListener { querySnapshot ->
-                Log.d("Shared_data","user ID: $userId " + "Number of documents: ${querySnapshot.size()}")
                 val tasksList = mutableListOf<SharedTask>()
 
                 for (document in querySnapshot.documents) {
@@ -181,7 +182,10 @@ class TaskDbHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME, 
                     val dailyTarget = document.getLong("daily_target") ?: 0
                     val duration = document.getLong("duration") ?: 0
 
-                    val task = SharedTask(taskName, dailyTarget.toInt(), duration.toInt())
+                    val formattedDuration = formatMillisToHoursMinutes(duration)
+                    val formattedTarget = formatMillisToHoursMinutes(dailyTarget)
+
+                    val task = SharedTask(taskName, 0,0, formattedDuration, formattedTarget)
                     tasksList.add(task)
                 }
 
@@ -190,5 +194,14 @@ class TaskDbHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME, 
             .addOnFailureListener { e ->
                 onFailure.invoke(e)
             }
+    }
+
+    fun formatMillisToHoursMinutes(milliseconds: Long): String {
+        val totalSeconds = milliseconds / 1000
+        val hours = totalSeconds / 3600
+        val minutes = (totalSeconds % 3600) / 60
+        val seconds = totalSeconds % 60
+
+        return String.format("%02d:%02d:%02d", hours, minutes, seconds)
     }
 }

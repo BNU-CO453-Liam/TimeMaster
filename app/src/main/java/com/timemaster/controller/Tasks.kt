@@ -42,7 +42,6 @@ class Tasks : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.tasks)
 
-        //taskNameEditText = findViewById(R.id.taskNameEditText)
         taskRecyclerView = findViewById(R.id.taskRecyclerView) // Updated to RecyclerView
 
         taskList = mutableListOf()
@@ -62,14 +61,12 @@ class Tasks : AppCompatActivity() {
         timerHandler = Handler(Looper.getMainLooper())
 
         // Find the Floating Action Buttons
-        val fab3: FloatingActionButton = findViewById(R.id.floatingActionButton3)
         val fab4: FloatingActionButton = findViewById(R.id.floatingActionButton4)
         val fab5: FloatingActionButton = findViewById(R.id.floatingActionButton5)
         val fab6: FloatingActionButton = findViewById(R.id.floatingActionButton6)
         val menu by lazy { Menu(this) }
 
         // Set click listeners for each button
-        fab3.setOnClickListener { openActivity(Tasks::class.java) }
         fab4.setOnClickListener { openActivity(Metrics::class.java) }
         fab5.setOnClickListener { openActivity(Performance::class.java) }
         fab6.setOnClickListener { menu.showPopupMenu(it) }

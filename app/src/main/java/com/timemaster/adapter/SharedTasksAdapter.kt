@@ -37,8 +37,8 @@ class SharedTasksAdapter : RecyclerView.Adapter<SharedTasksAdapter.TaskViewHolde
 
         fun bind(task: SharedTask) {
             taskNameTextView.text = "Task: ${task.name}"
-            dailyTargetTextView.text = "Daily Target: ${task.dailyTargetTime}"
-            durationTextView.text = "Duration: ${task.duration}"
+            dailyTargetTextView.text = "Daily Target: ${task.formattedTarget}"
+            durationTextView.text = "Duration: ${task.formattedDuration}"
         }
     }
 }

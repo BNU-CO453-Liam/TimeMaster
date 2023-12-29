@@ -34,14 +34,12 @@ class Performance : AppCompatActivity() {
         // Find the Floating Action Buttons
         val fab3: FloatingActionButton = findViewById(R.id.floatingActionButton3)
         val fab4: FloatingActionButton = findViewById(R.id.floatingActionButton4)
-        val fab5: FloatingActionButton = findViewById(R.id.floatingActionButton5)
         val fab6: FloatingActionButton = findViewById(R.id.floatingActionButton6)
         val menu by lazy { Menu(this) }
 
         // Set click listeners for each button
         fab3.setOnClickListener { openActivity(Tasks::class.java) }
         fab4.setOnClickListener { openActivity(Metrics::class.java) }
-        fab5.setOnClickListener { openActivity(Performance::class.java) }
         fab6.setOnClickListener { menu.showPopupMenu(it) }
 
         // Initialize BarChart
@@ -166,7 +164,7 @@ class Performance : AppCompatActivity() {
         // Display the Y-axis on the left side only
         yAxis.axisMinimum = 0f
 
-        val fiveHours = 5 * 60 * 1000 // sixteen hours in milliseconds
+        val fiveHours = 5 * 60 * 1000 // five hours in milliseconds, subjective
 
         yAxis.axisMaximum = fiveHours.toFloat()
         yAxis.setPosition(YAxis.YAxisLabelPosition.OUTSIDE_CHART)
